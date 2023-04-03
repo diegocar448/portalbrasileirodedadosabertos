@@ -1,0 +1,81 @@
+version: '3'
+
+networks:
+  laravel:
+
+services:
+  site:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+      args:
+        - NGINXUSER=${NGINXUSER:-www-data}
+        - NGINXGROUP=${NGINXGROUP:-www-data}
+    container_name: nginx_app
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www/html:delegated
+    depends_on:
+      - php
+      # - redis
+      - mysql
+    networks:
+      - laravel
+    environment:
+      XDEBUG_INSTALL: 1
+      XDEBUG_CONFIG: "remote_host=host.docker.internal"
+      XDEBUG_REMOTE_ENABLE: "on"
+      XDEBUG_REMOTE_AUTOSTART: 1
+      XDEBUG_REMOTE_CONNECT_BACK: 0
+      XDEBUG_REMOTE_HANDLER: dbgp
+      XDEBUG_PROFILER_ENABLE: 1
+      XDEBUG_PROFILER_OUTPUT_DIR: /var/www/html/xdebug.log
+      XDEBUG_REMOTE_PORT: 9003
+      XDEBUGINI_PATH: /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      XDEBUG_DEFAULT_ENABLE: 1
+      XDEBUG_IDEKEY: PHPSTORM
+
+  mysql:
+    image: mysql:5.7.29
+    container_name: mysql_portal
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_DATABASE: portal
+      MYSQL_USER: portal
+      MYSQL_PASSWORD: portal
+      MYSQL_ROOT_PASSWORD: portal
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql_portal
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    networks:
+      - laravel
+  php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+      args:
+        - PHPUSER=${PHPUSER:-www-data}
+        - PHPGROUP=${PHPGROUP:-www-data}
+    container_name: app_portal
+    volumes:
+      - ./:/var/www/html:delegated
+    networks:
+      - laravel
+    environment:
+      - TZ=America/Sao_Paulo
+      - DEBIAN_FRONTEND=noninteractive
+
+  # redis:
+  #   image: redis:alpine
+  #   container_name: redis_portal
+  #   restart: unless-stopped
+  #   ports:
+  #     - 6379:6379
+  #   networks:
+  #     - laravel
+
