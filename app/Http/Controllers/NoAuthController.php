@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ubs;
 use Illuminate\Http\Request;
 
 class NoAuthController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+
         //header('Content-type: application/json');
 
         // Set your CSV feed
@@ -58,8 +60,34 @@ class NoAuthController extends Controller
           $newArray[$j] = $d;
         }
 
+        Ubs::truncate();
+
+        $ubs_lista = $newArray;
+        foreach ($ubs_lista as $key => $ubs) {
+            Ubs::create([
+                'bairro' => $ubs['bairro'],
+                'cep' => $ubs['cep'],
+                'cidade' => $ubs['cidade'],
+                'complemento' => $ubs['complemento'],
+                'data_atualizacao' => $ubs['data_atualizacao'],
+                'endereco' => $ubs['endereco'],
+                'georef_location' => $ubs['georef_location'],
+                'ibge' => $ubs['ibge'],
+                'id_equipamento' => $ubs['id_equipamento'],
+                'nome' => $ubs['nome'],
+                'referencia' => $ubs['referencia'],
+                'responsavel' => $ubs['responsavel'],
+                'telefone' => $ubs['telefone'],
+                'uf' => $ubs['uf']
+            ]);
+        }
+        $ubs = Ubs::
+            where("nome", 'like', "%".$request->search."%")
+            ->paginate(30);
         // Print it out as JSON
-        return $ubs_lista = json_encode($newArray);
+
+        return $ubs_lista = json_encode($ubs);
+        //return $ubs_lista = json_encode($newArray);
         //$ubs_lista = json_decode(json_encode($newArray), true);
 
     }

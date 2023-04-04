@@ -12,7 +12,7 @@
 
 
 <div id="app">
-    {{-- <div class="col-xs-12">
+    <div class="col-xs-12">
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">Dados Abertos:</h3>
@@ -46,7 +46,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($ubs_lista as $ubs)
+                                    {{-- @foreach($ubs_lista as $ubs)
                                         <tr>
                                             <td>{{$ubs['id_equipamento']}}</td>
                                             <td>{{$ubs['ibge']}}</td>
@@ -64,7 +64,9 @@
                                             <td>{{$ubs['georef_location']}}</td>
                                             <td>{{$ubs['data_atualizacao']}}</td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
+
+
                                 </tbody>
                             </table>
                         </div>
@@ -73,24 +75,6 @@
             </div>
             <!-- /.box-body -->
         </div>
-    </div> --}}
+    </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-    <script>
-
-
-
-
-
-    </script>
-</div
 @endsection
