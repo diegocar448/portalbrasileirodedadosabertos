@@ -20,6 +20,9 @@
 
 ### `npm run build`
 
+# No diretorio do projeto rodamos o comando a seguir para criar as tabelas no banco de dados
+### `php artisan migrate`
+
 # O app abrirá em localhost:8000
 
 ### `http://localhost:8000`
